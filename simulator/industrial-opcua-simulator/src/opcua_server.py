@@ -43,6 +43,7 @@ DEVICE_VALUE_KEYS = {
 }
 
 METADATA_NODE_NAMES = ("DeviceId", "DeviceType", "Sequence", "SensorTimestamp", "IsAnomaly", "AnomalyType")
+EXPERIMENT_NODE_NAMES = ("ExperimentId", "Scenario", "RunId")
 
 
 @dataclass(frozen=True)
@@ -53,9 +54,15 @@ class OpcUaNodeReference:
 
 
 class IndustrialOpcUaServer:
-    def __init__(self, config: OpcUaConfig, devices: list[BaseDevice]) -> None:
+    def __init__(
+        self,
+        config: OpcUaConfig,
+        devices: list[BaseDevice],
+        experiment_metadata: dict[str, str] | None = None,
+    ) -> None:
         self.config = config
         self.devices = devices
+        self.experiment_metadata = experiment_metadata or {}
         self.server = Server()
         self.namespace_index: int | None = None
         self.nodes_by_device: dict[str, dict[str, Any]] = {}
@@ -104,6 +111,7 @@ class IndustrialOpcUaServer:
 
         objects = self.server.nodes.objects
         factory = await objects.add_object(self._node_id("Factory"), "Factory")
+        await self._add_experiment_metadata(factory)
         line = await factory.add_object(self._node_id("Factory.Line1"), "Line1")
 
         for device in self.devices:
@@ -131,6 +139,15 @@ class IndustrialOpcUaServer:
                 )
                 self.nodes_by_device[device.device_id][node_name] = node
 
+    async def _add_experiment_metadata(self, factory: Any) -> None:
+        experiment = await factory.add_object(self._node_id("Factory.Experiment"), "Experiment")
+        for node_name in EXPERIMENT_NODE_NAMES:
+            await experiment.add_variable(
+                self._node_id(f"Factory.Experiment.{node_name}"),
+                node_name,
+                self.experiment_metadata.get(node_name, ""),
+            )
+
     def _node_id(self, string_id: str) -> ua.NodeId:
         if self.namespace_index is None:
             raise RuntimeError("OPC UA namespace is not registered.")
@@ -144,6 +161,10 @@ def opcua_device_name(device_id: str) -> str:
 
 def opcua_node_string_id(device_id: str, node_name: str) -> str:
     return f"Factory.Line1.{opcua_device_name(device_id)}.{node_name}"
+
+
+def opcua_experiment_node_string_id(node_name: str) -> str:
+    return f"Factory.Experiment.{node_name}"
 
 
 def opcua_node_references(devices: list[BaseDevice]) -> list[OpcUaNodeReference]:

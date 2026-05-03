@@ -100,7 +100,12 @@ async def run_opcua_simulation(config: SimulationConfig) -> dict[str, Any]:
     writes_ground_truth = config.run_mode == "both"
     outputs = tuple((output.path, output.format) for output in config.all_outputs) if writes_ground_truth else ()
 
-    async with IndustrialOpcUaServer(config.opcua, devices) as opcua_server:
+    experiment_metadata = {
+        "ExperimentId": config.experiment_id,
+        "Scenario": config.scenario,
+        "RunId": config.run_id,
+    }
+    async with IndustrialOpcUaServer(config.opcua, devices, experiment_metadata) as opcua_server:
         logger_context = MultiGroundTruthLogger(outputs) if writes_ground_truth else nullcontext(None)
         with logger_context as logger:
             while config.until_stopped or message_index < total_messages:

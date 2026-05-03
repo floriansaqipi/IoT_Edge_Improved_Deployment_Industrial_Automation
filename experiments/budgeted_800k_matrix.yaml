@@ -1,0 +1,146 @@
+id: budgeted_800k_s0_s1_s2
+description: Budgeted one-day Azure IoT Edge study matrix capped below 800,000 IoT Hub messages.
+dailyCloudMessageHardLimit: 800000
+plannedCloudMessageLimit: 640000
+cloudRateLimitMessagesPerSecond: 90
+billableMessageChunkBytes: 4096
+azure:
+  iotHubSku: S1
+  iotHubUnits: 2
+  acrSku: Basic
+defaults:
+  deviceCount: 100
+  estimatedPayloadBytes: 2048
+experiments:
+  - id: s0_90_normal
+    block: normal_network
+    scenario: S0_CLOUD_ONLY
+    networkCondition: normal
+    targetMessagesPerSecond: 90
+    cloudMessagesPerSecond: 90
+    durationSeconds: 300
+    repetitions: 3
+    cloudOutputPolicy: full
+    estimatedPayloadBytes: 2048
+    estimatedBillableMessages: 81000
+  - id: s1_90_normal
+    block: normal_network
+    scenario: S1_EDGE_PASS_THROUGH
+    networkCondition: normal
+    targetMessagesPerSecond: 90
+    cloudMessagesPerSecond: 90
+    durationSeconds: 300
+    repetitions: 3
+    cloudOutputPolicy: full
+    estimatedPayloadBytes: 2048
+    estimatedBillableMessages: 81000
+  - id: s2_90_normal
+    block: normal_network
+    scenario: S2_HYBRID
+    networkCondition: normal
+    targetMessagesPerSecond: 90
+    cloudMessagesPerSecond: 9
+    durationSeconds: 300
+    repetitions: 3
+    cloudOutputPolicy: sampled_10_percent
+    estimatedPayloadBytes: 2048
+    estimatedBillableMessages: 8100
+  - id: s0_90_delay_200
+    block: delay_200ms
+    scenario: S0_CLOUD_ONLY
+    networkCondition: delay_200ms
+    targetMessagesPerSecond: 90
+    cloudMessagesPerSecond: 90
+    durationSeconds: 300
+    repetitions: 3
+    cloudOutputPolicy: full
+    estimatedPayloadBytes: 2048
+    estimatedBillableMessages: 81000
+  - id: s1_90_delay_200
+    block: delay_200ms
+    scenario: S1_EDGE_PASS_THROUGH
+    networkCondition: delay_200ms
+    targetMessagesPerSecond: 90
+    cloudMessagesPerSecond: 90
+    durationSeconds: 300
+    repetitions: 3
+    cloudOutputPolicy: full
+    estimatedPayloadBytes: 2048
+    estimatedBillableMessages: 81000
+  - id: s2_90_delay_200
+    block: delay_200ms
+    scenario: S2_HYBRID
+    networkCondition: delay_200ms
+    targetMessagesPerSecond: 90
+    cloudMessagesPerSecond: 9
+    durationSeconds: 300
+    repetitions: 3
+    cloudOutputPolicy: sampled_10_percent
+    estimatedPayloadBytes: 2048
+    estimatedBillableMessages: 8100
+  - id: s0_90_outage_120
+    block: cloud_outage_recovery
+    scenario: S0_CLOUD_ONLY
+    networkCondition: cloud_outage_120s
+    targetMessagesPerSecond: 90
+    cloudMessagesPerSecond: 90
+    durationSeconds: 300
+    repetitions: 3
+    cloudOutputPolicy: full
+    estimatedPayloadBytes: 2048
+    estimatedBillableMessages: 81000
+  - id: s1_90_outage_120
+    block: cloud_outage_recovery
+    scenario: S1_EDGE_PASS_THROUGH
+    networkCondition: cloud_outage_120s
+    targetMessagesPerSecond: 90
+    cloudMessagesPerSecond: 90
+    durationSeconds: 300
+    repetitions: 3
+    cloudOutputPolicy: full
+    estimatedPayloadBytes: 2048
+    estimatedBillableMessages: 81000
+  - id: s2_90_outage_120
+    block: cloud_outage_recovery
+    scenario: S2_HYBRID
+    networkCondition: cloud_outage_120s
+    targetMessagesPerSecond: 90
+    cloudMessagesPerSecond: 9
+    durationSeconds: 300
+    repetitions: 3
+    cloudOutputPolicy: sampled_10_percent
+    estimatedPayloadBytes: 2048
+    estimatedBillableMessages: 8100
+  - id: s0_500_stress_capped
+    block: local_edge_stress
+    scenario: S0_CLOUD_ONLY
+    networkCondition: normal
+    targetMessagesPerSecond: 500
+    cloudMessagesPerSecond: 90
+    durationSeconds: 60
+    repetitions: 3
+    cloudOutputPolicy: capped
+    estimatedPayloadBytes: 2048
+    estimatedBillableMessages: 16200
+  - id: s1_500_stress_capped
+    block: local_edge_stress
+    scenario: S1_EDGE_PASS_THROUGH
+    networkCondition: normal
+    targetMessagesPerSecond: 500
+    cloudMessagesPerSecond: 90
+    durationSeconds: 60
+    repetitions: 3
+    cloudOutputPolicy: capped
+    estimatedPayloadBytes: 2048
+    estimatedBillableMessages: 16200
+  - id: s2_500_stress_capped
+    block: local_edge_stress
+    scenario: S2_HYBRID
+    networkCondition: normal
+    targetMessagesPerSecond: 500
+    cloudMessagesPerSecond: 9
+    durationSeconds: 60
+    repetitions: 3
+    cloudOutputPolicy: capped
+    estimatedPayloadBytes: 2048
+    estimatedBillableMessages: 1620

@@ -5,8 +5,38 @@ microservice placement study.
 
 ## Current Status
 
-As of 2026-05-03, Codex has not added, removed, or modified any Windows Firewall
-rules for this project.
+As of 2026-05-03, the following scoped Windows Firewall rules are installed on
+Machine A. These rules were not created during the Phase 3 code implementation,
+but they are recorded here because they are now part of the lab state.
+
+- `AzureIoTEdgeStudy-OPCUA-TCP-4840`
+  - Display name: `Azure IoT Edge Study OPC UA Simulator TCP 4840`
+  - Direction: inbound
+  - Action: allow
+  - Profile: `Any`
+  - Protocol: TCP
+  - Local port: `4840`
+  - Remote addresses: `192.168.1.3`, `192.168.1.9`
+- `AzureIoTEdgeStudy-ICMPv4-Ping-From-MachineB`
+  - Display name: `Azure IoT Edge Study ICMPv4 Ping From Machine B`
+  - Direction: inbound
+  - Action: allow
+  - Profile: `Any`
+  - Protocol: ICMPv4 echo request
+  - Remote addresses: `192.168.1.3`, `192.168.1.9`
+
+Revert the current firewall state:
+
+```powershell
+.\infrastructure\host-vm-setup\windows-firewall-opcua.ps1 -Action Remove
+```
+
+Equivalent raw revert command:
+
+```powershell
+Remove-NetFirewallRule -Name 'AzureIoTEdgeStudy-OPCUA-TCP-4840'
+Remove-NetFirewallRule -Name 'AzureIoTEdgeStudy-ICMPv4-Ping-From-MachineB'
+```
 
 ## Planned OPC UA Rule
 
@@ -75,3 +105,4 @@ Remove-NetFirewallRule -Name 'AzureIoTEdgeStudy-ICMPv4-Ping-From-MachineB'
 - 2026-05-03: Attempted to add both scoped rules from a non-elevated shell. Windows returned `Access is denied`; no rule was applied.
 - 2026-05-03: Updated planned scoped rules to allow both Machine B addresses: Ubuntu VM `192.168.1.3` and physical host `192.168.1.9`. No rule was applied by this edit.
 - 2026-05-03: Existing scoped rules were found installed for `192.168.1.3` only. Attempted to update them in place to include `192.168.1.9`; Windows returned `Access is denied`, so the installed rules were not changed.
+- 2026-05-03: Recorded current lab state after manual connectivity testing: scoped TCP `4840` and ICMPv4 rules are installed for `192.168.1.3` and `192.168.1.9`. No firewall command was run during this documentation update.

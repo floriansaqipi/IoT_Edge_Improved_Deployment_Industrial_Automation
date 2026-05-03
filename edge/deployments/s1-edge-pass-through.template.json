@@ -1,0 +1,90 @@
+{
+  "modulesContent": {
+    "$edgeAgent": {
+      "properties.desired": {
+        "schemaVersion": "1.1",
+        "runtime": {
+          "type": "docker",
+          "settings": {
+            "minDockerVersion": "v1.25",
+            "loggingOptions": "",
+            "registryCredentials": {
+              "studyAcr": {
+                "username": "__ACR_USERNAME__",
+                "password": "__ACR_PASSWORD__",
+                "address": "__ACR_LOGIN_SERVER__"
+              }
+            }
+          }
+        },
+        "systemModules": {
+          "edgeAgent": {
+            "type": "docker",
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-agent:1.5",
+              "createOptions": "{}"
+            }
+          },
+          "edgeHub": {
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-hub:1.5",
+              "createOptions": "{}"
+            }
+          }
+        },
+        "modules": {
+          "opcua-collector": {
+            "version": "0.1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "__ACR_LOGIN_SERVER__/opcua-collector:__COLLECTOR_IMAGE_TAG__",
+              "createOptions": "{}"
+            },
+            "env": {
+              "OPCUA_ENDPOINT": {
+                "value": "opc.tcp://192.168.1.5:4840/factory/server"
+              },
+              "OPCUA_NAMESPACE_URI": {
+                "value": "urn:industrial-automation:azure-iot-edge-study"
+              },
+              "OUTPUT_NAME": {
+                "value": "telemetry"
+              },
+              "EXPERIMENT_ID_FALLBACK": {
+                "value": "phase3_s1"
+              },
+              "SCENARIO_FALLBACK": {
+                "value": "S1_EDGE_PASS_THROUGH"
+              },
+              "RUN_ID_FALLBACK": {
+                "value": "phase3_s1_rep1"
+              },
+              "RECONNECT_SECONDS": {
+                "value": "5"
+              }
+            }
+          }
+        }
+      }
+    },
+    "$edgeHub": {
+      "properties.desired": {
+        "schemaVersion": "1.1",
+        "routes": {
+          "collectorToCloud": "FROM /messages/modules/opcua-collector/outputs/telemetry INTO $upstream"
+        },
+        "storeAndForwardConfiguration": {
+          "timeToLiveSecs": 7200
+        }
+      }
+    },
+    "opcua-collector": {
+      "properties.desired": {}
+    }
+  }
+}

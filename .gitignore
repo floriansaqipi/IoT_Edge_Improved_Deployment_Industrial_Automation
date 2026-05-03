@@ -210,6 +210,11 @@ tempCodeRunnerFile.py
 simulator/industrial-opcua-simulator/results/*
 !simulator/industrial-opcua-simulator/results/.gitkeep
 
+# Local/rendered Azure IoT Edge deployment artifacts
+edge/deployments/*.generated.json
+edge/deployments/*.local.json
+.env.phase3.local
+
 # PyPI configuration file
 .pypirc
 

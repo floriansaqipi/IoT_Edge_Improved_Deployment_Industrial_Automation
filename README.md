@@ -16,6 +16,10 @@ Machine B should connect to Machine A at:
 opc.tcp://192.168.1.5:4840/factory/server
 ```
 
+Phase 3 adds S1 Azure IoT Edge ingestion. Machine B runs a custom
+`opcua-collector` module that subscribes to the Machine A OPC UA server and
+forwards full pass-through telemetry to IoT Hub through `$edgeHub`.
+
 ## Setup
 
 Use the existing Python 3.12 virtual environment:
@@ -79,6 +83,55 @@ ns=<study>;s=Factory.Line1.Motor001.Temperature
 ns=<study>;s=Factory.Line1.Motor001.Sequence
 ns=<study>;s=Factory.Line1.Motor001.IsAnomaly
 ```
+
+The simulator also exposes run metadata for Phase 3 under
+`Objects/Factory/Experiment`:
+
+```text
+ns=<study>;s=Factory.Experiment.ExperimentId
+ns=<study>;s=Factory.Experiment.Scenario
+ns=<study>;s=Factory.Experiment.RunId
+```
+
+## Run Phase 3 S1 Edge Ingestion
+
+Build and deploy the collector from Machine A or a machine with Azure CLI access:
+
+```bash
+az acr build --registry <uniqueacrname> --image opcua-collector:0.1.0-amd64 edge/modules/opcua-collector
+```
+
+Render the local deployment manifest after creating ACR credentials:
+
+```powershell
+.\scripts\render_s1_deployment.ps1 -AcrLoginServer "<uniqueacrname>.azurecr.io" -AcrUsername "<acr-username>" -AcrPassword "<acr-password>"
+```
+
+Apply it to the Machine B Edge device:
+
+```bash
+az iot edge set-modules --hub-name <unique-iot-hub-name> --device-id edge-gateway-b-ubuntu --content edge/deployments/s1-edge-pass-through.generated.json
+```
+
+Detailed Azure and Ubuntu steps live in
+`infrastructure/azure/phase3-azure-setup.md` and
+`infrastructure/host-vm-setup/ubuntu-iotedge-notes.md`.
+
+## Budgeted 800k/Day Study Plan
+
+The active one-day scientific run is documented in
+`azure_iot_edge_study_context_800k_daily_budget.md`. It keeps S0/S1/S2 and
+defers S3 so the run fits an 800,000 IoT Hub messages/day hard cap.
+
+Validate the machine-readable experiment matrix before any full Azure run:
+
+```powershell
+.\scripts\check_experiment_budget.ps1
+```
+
+The checked matrix is `experiments/budgeted_800k_matrix.yaml`; its planned cloud
+total is 544,320 billable messages, below the 640,000 operational planning
+ceiling.
 
 ## Output Schema
 
