@@ -1,0 +1,69 @@
+experimentId: phase2_exp_100_500mps_opcua
+scenario: OPCUA_SIMULATOR
+runId: exp_100_devices_500mps_opcua_rep1
+runMode: both
+deviceCount: 100
+targetMessagesPerSecond: 500
+durationSeconds: 60
+seed: 500
+startTime: "2026-01-01T00:00:00Z"
+paceRealtime: true
+opcua:
+  endpoint: opc.tcp://0.0.0.0:4840/factory/server
+  namespaceUri: urn:industrial-automation:azure-iot-edge-study
+deviceMix:
+  motor: 40
+  pump: 25
+  conveyor: 20
+  tank: 10
+  compressor: 5
+outputs:
+  - format: jsonl
+    path: ../results/exp_100_devices_500mps_opcua.jsonl
+  - format: csv
+    path: ../results/exp_100_devices_500mps_opcua.csv
+faults:
+  enabled: true
+  schedules:
+    - deviceId: motor-014
+      anomalyType: bearing_fault
+      startSecond: 10
+      warningDurationSeconds: 5
+      faultDurationSeconds: 20
+      recoveryDurationSeconds: 10
+    - deviceId: motor-031
+      anomalyType: overload
+      startSecond: 15
+      warningDurationSeconds: 5
+      faultDurationSeconds: 20
+      recoveryDurationSeconds: 10
+    - deviceId: pump-011
+      anomalyType: pressure_drop
+      startSecond: 20
+      warningDurationSeconds: 5
+      faultDurationSeconds: 15
+      recoveryDurationSeconds: 10
+    - deviceId: pump-020
+      anomalyType: blockage
+      startSecond: 25
+      warningDurationSeconds: 5
+      faultDurationSeconds: 15
+      recoveryDurationSeconds: 10
+    - deviceId: conveyor-009
+      anomalyType: jam
+      startSecond: 30
+      warningDurationSeconds: 5
+      faultDurationSeconds: 15
+      recoveryDurationSeconds: 10
+    - deviceId: tank-004
+      anomalyType: overflow_risk
+      startSecond: 35
+      warningDurationSeconds: 5
+      faultDurationSeconds: 15
+      recoveryDurationSeconds: 10
+    - deviceId: compressor-002
+      anomalyType: pressure_instability
+      startSecond: 15
+      warningDurationSeconds: 5
+      faultDurationSeconds: 25
+      recoveryDurationSeconds: 10

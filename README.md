@@ -8,6 +8,14 @@ OPC UA, or cloud resources yet. The simulator generates correlated telemetry for
 virtual motors, pumps, conveyors, tanks, and compressors, injects controlled
 faults, and writes ground-truth output to JSONL or CSV.
 
+Phase 2 adds OPC UA server mode. The Windows simulator laptop is Machine A
+(`192.168.1.5`) and the Ubuntu Server VM edge host is Machine B (`192.168.1.3`).
+Machine B should connect to Machine A at:
+
+```text
+opc.tcp://192.168.1.5:4840/factory/server
+```
+
 ## Setup
 
 Use the existing Python 3.12 virtual environment:
@@ -24,6 +32,19 @@ Run one of the starter experiment configs:
 .\.venv\Scripts\python.exe simulator\industrial-opcua-simulator\src\main.py simulator\industrial-opcua-simulator\configs\exp_10_devices_10mps.yaml
 .\.venv\Scripts\python.exe simulator\industrial-opcua-simulator\src\main.py simulator\industrial-opcua-simulator\configs\exp_50_devices_100mps.yaml
 .\.venv\Scripts\python.exe simulator\industrial-opcua-simulator\src\main.py simulator\industrial-opcua-simulator\configs\exp_100_devices_500mps.yaml
+```
+
+Run a Phase 2 OPC UA profile:
+
+```powershell
+.\.venv\Scripts\python.exe simulator\industrial-opcua-simulator\src\main.py simulator\industrial-opcua-simulator\configs\exp_10_devices_10mps_opcua.yaml --mode both --realtime
+```
+
+For a longer live UaExpert or Machine B test, keep the server running until
+interrupted:
+
+```powershell
+.\.venv\Scripts\python.exe simulator\industrial-opcua-simulator\src\main.py simulator\industrial-opcua-simulator\configs\exp_10_devices_10mps_opcua.yaml --until-stopped
 ```
 
 Override duration, output path, or output format when doing quick checks:
@@ -48,6 +69,15 @@ preview the reversible rule first:
 
 ```powershell
 .\infrastructure\host-vm-setup\windows-firewall-opcua.ps1 -Action Show
+```
+
+The OPC UA address space is exposed under `Objects/Factory/Line1` with stable
+string NodeIds such as:
+
+```text
+ns=<study>;s=Factory.Line1.Motor001.Temperature
+ns=<study>;s=Factory.Line1.Motor001.Sequence
+ns=<study>;s=Factory.Line1.Motor001.IsAnomaly
 ```
 
 ## Output Schema

@@ -207,6 +207,7 @@ tempCodeRunnerFile.py
 .ruff_cache/
 
 # Generated simulator output
+simulator/industrial-opcua-simulator/results/*
 !simulator/industrial-opcua-simulator/results/.gitkeep
 
 # PyPI configuration file

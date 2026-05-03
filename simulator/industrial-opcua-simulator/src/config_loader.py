@@ -9,6 +9,9 @@ import yaml
 
 
 DEVICE_TYPES = ("motor", "pump", "conveyor", "tank", "compressor")
+RUN_MODES = ("file", "opcua", "both")
+DEFAULT_OPCUA_ENDPOINT = "opc.tcp://0.0.0.0:4840/factory/server"
+DEFAULT_OPCUA_NAMESPACE_URI = "urn:industrial-automation:azure-iot-edge-study"
 
 
 class ConfigError(ValueError):
@@ -78,19 +81,28 @@ class FaultConfig:
 
 
 @dataclass(frozen=True)
+class OpcUaConfig:
+    endpoint: str
+    namespace_uri: str
+
+
+@dataclass(frozen=True)
 class SimulationConfig:
     experiment_id: str
     scenario: str
     run_id: str
+    run_mode: str
     device_count: int
     target_messages_per_second: int
     duration_seconds: float
     seed: int
     start_time: datetime
     pace_realtime: bool
+    until_stopped: bool
     device_mix: dict[str, int]
     output: OutputConfig
     outputs: tuple[OutputConfig, ...]
+    opcua: OpcUaConfig
     faults: FaultConfig
 
     @property
@@ -124,15 +136,18 @@ def load_config(path: str | Path) -> SimulationConfig:
         experiment_id=_required_str(raw, "experimentId"),
         scenario=_required_str(raw, "scenario"),
         run_id=_required_str(raw, "runId"),
+        run_mode=_parse_run_mode(raw.get("runMode", "file")),
         device_count=device_count,
         target_messages_per_second=target_mps,
         duration_seconds=duration,
         seed=_required_int(raw, "seed"),
         start_time=_parse_start_time(raw.get("startTime")),
         pace_realtime=bool(raw.get("paceRealtime", False)),
+        until_stopped=bool(raw.get("untilStopped", False)),
         device_mix=device_mix,
         output=output,
         outputs=outputs,
+        opcua=_parse_opcua(raw.get("opcua")),
         faults=_parse_faults(raw.get("faults")),
     )
     _validate_config(config)
@@ -190,6 +205,30 @@ def _parse_output_item(raw: Any, config_dir: Path, label: str) -> OutputConfig:
     if not path.is_absolute():
         path = (config_dir / path).resolve()
     return OutputConfig(format=output_format, path=path)
+
+
+def _parse_run_mode(raw: Any) -> str:
+    run_mode = str(raw).lower()
+    if run_mode not in RUN_MODES:
+        raise ConfigError("runMode must be one of: file, opcua, both.")
+    return run_mode
+
+
+def _parse_opcua(raw: Any) -> OpcUaConfig:
+    if raw is None:
+        return OpcUaConfig(endpoint=DEFAULT_OPCUA_ENDPOINT, namespace_uri=DEFAULT_OPCUA_NAMESPACE_URI)
+    if not isinstance(raw, dict):
+        raise ConfigError("opcua must be a mapping.")
+
+    endpoint = str(raw.get("endpoint", DEFAULT_OPCUA_ENDPOINT)).strip()
+    namespace_uri = str(raw.get("namespaceUri", DEFAULT_OPCUA_NAMESPACE_URI)).strip()
+    if not endpoint:
+        raise ConfigError("opcua.endpoint must be a non-empty string.")
+    if not endpoint.startswith("opc.tcp://"):
+        raise ConfigError("opcua.endpoint must start with opc.tcp://.")
+    if not namespace_uri:
+        raise ConfigError("opcua.namespaceUri must be a non-empty string.")
+    return OpcUaConfig(endpoint=endpoint, namespace_uri=namespace_uri)
 
 
 def _parse_device_mix(raw: Any, device_count: int) -> dict[str, int]:
@@ -296,3 +335,5 @@ def _validate_config(config: SimulationConfig) -> None:
         raise ConfigError("durationSeconds must be greater than zero.")
     if config.expected_message_count <= 0:
         raise ConfigError("Experiment must produce at least one message.")
+    if config.until_stopped and config.run_mode == "file":
+        raise ConfigError("untilStopped is only valid for opcua or both run modes.")

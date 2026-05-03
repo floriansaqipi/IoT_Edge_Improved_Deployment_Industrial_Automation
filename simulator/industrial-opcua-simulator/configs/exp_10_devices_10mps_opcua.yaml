@@ -1,0 +1,39 @@
+experimentId: phase2_exp_10_10mps_opcua
+scenario: OPCUA_SIMULATOR
+runId: exp_10_devices_10mps_opcua_rep1
+runMode: both
+deviceCount: 10
+targetMessagesPerSecond: 10
+durationSeconds: 60
+seed: 42
+startTime: "2026-01-01T00:00:00Z"
+paceRealtime: true
+opcua:
+  endpoint: opc.tcp://0.0.0.0:4840/factory/server
+  namespaceUri: urn:industrial-automation:azure-iot-edge-study
+deviceMix:
+  motor: 4
+  pump: 2
+  conveyor: 2
+  tank: 1
+  compressor: 1
+outputs:
+  - format: jsonl
+    path: ../results/exp_10_devices_10mps_opcua.jsonl
+  - format: csv
+    path: ../results/exp_10_devices_10mps_opcua.csv
+faults:
+  enabled: true
+  schedules:
+    - deviceId: motor-001
+      anomalyType: bearing_fault
+      startSecond: 10
+      warningDurationSeconds: 5
+      faultDurationSeconds: 20
+      recoveryDurationSeconds: 10
+    - deviceId: pump-001
+      anomalyType: blockage
+      startSecond: 25
+      warningDurationSeconds: 5
+      faultDurationSeconds: 15
+      recoveryDurationSeconds: 10
