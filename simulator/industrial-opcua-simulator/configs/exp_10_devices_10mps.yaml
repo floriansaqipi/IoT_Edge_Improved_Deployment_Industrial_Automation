@@ -1,0 +1,33 @@
+experimentId: phase1_exp_10_10mps
+scenario: LOCAL_ONLY
+runId: exp_10_devices_10mps_rep1
+deviceCount: 10
+targetMessagesPerSecond: 10
+durationSeconds: 10
+seed: 42
+startTime: "2026-01-01T00:00:00Z"
+paceRealtime: false
+deviceMix:
+  motor: 4
+  pump: 2
+  conveyor: 2
+  tank: 1
+  compressor: 1
+output:
+  format: jsonl
+  path: ../results/exp_10_devices_10mps.jsonl
+faults:
+  enabled: true
+  schedules:
+    - deviceId: motor-001
+      anomalyType: bearing_fault
+      startSecond: 2
+      warningDurationSeconds: 2
+      faultDurationSeconds: 4
+      recoveryDurationSeconds: 2
+    - deviceId: pump-001
+      anomalyType: blockage
+      startSecond: 5
+      warningDurationSeconds: 1
+      faultDurationSeconds: 3
+      recoveryDurationSeconds: 1

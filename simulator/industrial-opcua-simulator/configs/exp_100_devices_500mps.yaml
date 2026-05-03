@@ -1,0 +1,63 @@
+experimentId: phase1_exp_100_500mps
+scenario: LOCAL_ONLY
+runId: exp_100_devices_500mps_rep1
+deviceCount: 100
+targetMessagesPerSecond: 500
+durationSeconds: 10
+seed: 500
+startTime: "2026-01-01T00:00:00Z"
+paceRealtime: false
+deviceMix:
+  motor: 40
+  pump: 25
+  conveyor: 20
+  tank: 10
+  compressor: 5
+output:
+  format: jsonl
+  path: ../results/exp_100_devices_500mps.jsonl
+faults:
+  enabled: true
+  schedules:
+    - deviceId: motor-014
+      anomalyType: bearing_fault
+      startSecond: 2
+      warningDurationSeconds: 2
+      faultDurationSeconds: 4
+      recoveryDurationSeconds: 2
+    - deviceId: motor-031
+      anomalyType: overload
+      startSecond: 3
+      warningDurationSeconds: 1
+      faultDurationSeconds: 4
+      recoveryDurationSeconds: 2
+    - deviceId: pump-011
+      anomalyType: pressure_drop
+      startSecond: 4
+      warningDurationSeconds: 1
+      faultDurationSeconds: 3
+      recoveryDurationSeconds: 2
+    - deviceId: pump-020
+      anomalyType: blockage
+      startSecond: 5
+      warningDurationSeconds: 1
+      faultDurationSeconds: 3
+      recoveryDurationSeconds: 2
+    - deviceId: conveyor-009
+      anomalyType: jam
+      startSecond: 6
+      warningDurationSeconds: 1
+      faultDurationSeconds: 3
+      recoveryDurationSeconds: 1
+    - deviceId: tank-004
+      anomalyType: overflow_risk
+      startSecond: 6
+      warningDurationSeconds: 1
+      faultDurationSeconds: 3
+      recoveryDurationSeconds: 1
+    - deviceId: compressor-002
+      anomalyType: pressure_instability
+      startSecond: 3
+      warningDurationSeconds: 1
+      faultDurationSeconds: 5
+      recoveryDurationSeconds: 1

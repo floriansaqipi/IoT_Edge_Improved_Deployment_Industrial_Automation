@@ -1,0 +1,39 @@
+experimentId: phase1_exp_50_100mps
+scenario: LOCAL_ONLY
+runId: exp_50_devices_100mps_rep1
+deviceCount: 50
+targetMessagesPerSecond: 100
+durationSeconds: 10
+seed: 123
+startTime: "2026-01-01T00:00:00Z"
+paceRealtime: false
+deviceMix:
+  motor: 20
+  pump: 12
+  conveyor: 10
+  tank: 5
+  compressor: 3
+output:
+  format: jsonl
+  path: ../results/exp_50_devices_100mps.jsonl
+faults:
+  enabled: true
+  schedules:
+    - deviceId: motor-007
+      anomalyType: overheating
+      startSecond: 2
+      warningDurationSeconds: 2
+      faultDurationSeconds: 4
+      recoveryDurationSeconds: 2
+    - deviceId: conveyor-003
+      anomalyType: jam
+      startSecond: 4
+      warningDurationSeconds: 1
+      faultDurationSeconds: 3
+      recoveryDurationSeconds: 2
+    - deviceId: tank-002
+      anomalyType: overflow_risk
+      startSecond: 6
+      warningDurationSeconds: 1
+      faultDurationSeconds: 3
+      recoveryDurationSeconds: 1
