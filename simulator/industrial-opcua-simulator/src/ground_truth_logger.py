@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import csv
 import json
+from contextlib import ExitStack
 from pathlib import Path
 from typing import Any
 
@@ -68,6 +69,26 @@ class GroundTruthLogger:
         if self._csv_writer is None:
             raise RuntimeError("CSV writer was not initialized.")
         self._csv_writer.writerow(_flatten_record(record))
+
+
+class MultiGroundTruthLogger:
+    def __init__(self, outputs: tuple[tuple[Path, str], ...]) -> None:
+        self.outputs = outputs
+        self._stack = ExitStack()
+        self._loggers: list[GroundTruthLogger] = []
+
+    def __enter__(self) -> "MultiGroundTruthLogger":
+        for output_path, output_format in self.outputs:
+            logger = GroundTruthLogger(output_path, output_format)
+            self._loggers.append(self._stack.enter_context(logger))
+        return self
+
+    def __exit__(self, exc_type: object, exc: object, traceback: object) -> None:
+        self._stack.close()
+
+    def write(self, record: dict[str, Any]) -> None:
+        for logger in self._loggers:
+            logger.write(record)
 
 
 def _flatten_record(record: dict[str, Any]) -> dict[str, Any]:

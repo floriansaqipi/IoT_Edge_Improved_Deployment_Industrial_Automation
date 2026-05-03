@@ -13,7 +13,7 @@ import numpy as np
 from config_loader import ConfigError, OutputConfig, SimulationConfig, load_config
 from devices import DEVICE_CLASS_BY_TYPE
 from devices.base_device import BaseDevice
-from ground_truth_logger import GroundTruthLogger
+from ground_truth_logger import MultiGroundTruthLogger
 
 
 def build_devices(config: SimulationConfig) -> list[BaseDevice]:
@@ -52,7 +52,8 @@ def run_simulation(config: SimulationConfig) -> dict[str, Any]:
     anomaly_count = 0
     wall_start = time.perf_counter()
 
-    with GroundTruthLogger(config.output.path, config.output.format) as logger:
+    outputs = tuple((output.path, output.format) for output in config.all_outputs)
+    with MultiGroundTruthLogger(outputs) as logger:
         for message_index in range(total_messages):
             elapsed_seconds = message_index / config.target_messages_per_second
             if config.pace_realtime:
@@ -79,6 +80,8 @@ def run_simulation(config: SimulationConfig) -> dict[str, Any]:
         "groundTruthAnomalyMessages": anomaly_count,
         "outputPath": str(config.output.path),
         "outputFormat": config.output.format,
+        "outputPaths": [str(output.path) for output in config.all_outputs],
+        "outputFormats": [output.format for output in config.all_outputs],
         "paceRealtime": config.pace_realtime,
         "wallClockMessagesPerSecond": round(total_messages / wall_duration, 2),
     }
@@ -106,6 +109,8 @@ def apply_overrides(config: SimulationConfig, args: argparse.Namespace) -> Simul
         )
 
     replacements: dict[str, Any] = {"output": output}
+    if args.output is not None or args.format is not None:
+        replacements["outputs"] = ()
     if args.duration is not None:
         replacements["duration_seconds"] = args.duration
     if args.realtime:

@@ -90,6 +90,7 @@ class SimulationConfig:
     pace_realtime: bool
     device_mix: dict[str, int]
     output: OutputConfig
+    outputs: tuple[OutputConfig, ...]
     faults: FaultConfig
 
     @property
@@ -100,6 +101,10 @@ class SimulationConfig:
     def expected_message_count(self) -> int:
         return int(round(self.target_messages_per_second * self.duration_seconds))
 
+    @property
+    def all_outputs(self) -> tuple[OutputConfig, ...]:
+        return self.outputs or (self.output,)
+
 
 def load_config(path: str | Path) -> SimulationConfig:
     config_path = Path(path)
@@ -109,7 +114,7 @@ def load_config(path: str | Path) -> SimulationConfig:
     if not isinstance(raw, dict):
         raise ConfigError("Config root must be a mapping.")
 
-    output = _parse_output(raw.get("output"), config_path.parent)
+    output, outputs = _parse_outputs(raw, config_path.parent)
     device_count = _required_int(raw, "deviceCount")
     target_mps = _required_int(raw, "targetMessagesPerSecond")
     duration = _required_float(raw, "durationSeconds")
@@ -127,6 +132,7 @@ def load_config(path: str | Path) -> SimulationConfig:
         pace_realtime=bool(raw.get("paceRealtime", False)),
         device_mix=device_mix,
         output=output,
+        outputs=outputs,
         faults=_parse_faults(raw.get("faults")),
     )
     _validate_config(config)
@@ -154,16 +160,31 @@ def _required_float(raw: dict[str, Any], key: str) -> float:
     return float(value)
 
 
-def _parse_output(raw: Any, config_dir: Path) -> OutputConfig:
+def _parse_outputs(raw: dict[str, Any], config_dir: Path) -> tuple[OutputConfig, tuple[OutputConfig, ...]]:
+    if "outputs" in raw:
+        outputs_raw = raw.get("outputs")
+        if not isinstance(outputs_raw, list) or not outputs_raw:
+            raise ConfigError("outputs must be a non-empty list.")
+        outputs = tuple(_parse_output_item(item, config_dir, "outputs") for item in outputs_raw)
+        paths = [output.path for output in outputs]
+        if len(paths) != len(set(paths)):
+            raise ConfigError("outputs must not contain duplicate paths.")
+        return outputs[0], outputs
+
+    output = _parse_output_item(raw.get("output"), config_dir, "output")
+    return output, ()
+
+
+def _parse_output_item(raw: Any, config_dir: Path, label: str) -> OutputConfig:
     if not isinstance(raw, dict):
-        raise ConfigError("output must be configured.")
+        raise ConfigError(f"{label} must be configured.")
 
     output_format = str(raw.get("format", "")).lower()
     output_path = raw.get("path")
     if output_format not in {"jsonl", "csv"}:
-        raise ConfigError("output.format must be either jsonl or csv.")
+        raise ConfigError(f"{label}.format must be either jsonl or csv.")
     if not isinstance(output_path, str) or not output_path.strip():
-        raise ConfigError("output.path must be a non-empty string.")
+        raise ConfigError(f"{label}.path must be a non-empty string.")
 
     path = Path(output_path)
     if not path.is_absolute():

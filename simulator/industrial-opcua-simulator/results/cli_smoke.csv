@@ -1,0 +1,11 @@
+experimentId,scenario,runId,deviceId,deviceType,sequence,sensorTimestamp,edgeReceivedTimestamp,normalizedTimestamp,filteredTimestamp,anomalyTimestamp,cloudReceivedTimestamp,temperature,vibration,rpm,current,load,pressure,flowRate,speed,motorCurrent,level,inletFlow,outletFlow,valveState,status,isAnomaly,anomalyType
+phase1_exp_10_10mps,LOCAL_ONLY,exp_10_devices_10mps_rep1,motor-001,motor,1,2026-01-01T00:00:00.000000Z,,,,,,57.3691,0.1939,1458.012,8.5938,57.2143,,,,,,,,,NORMAL,False,
+phase1_exp_10_10mps,LOCAL_ONLY,exp_10_devices_10mps_rep1,motor-002,motor,1,2026-01-01T00:00:00.100000Z,,,,,,58.8448,0.2195,1469.9882,7.9911,49.0285,,,,,,,,,NORMAL,False,
+phase1_exp_10_10mps,LOCAL_ONLY,exp_10_devices_10mps_rep1,motor-003,motor,1,2026-01-01T00:00:00.200000Z,,,,,,61.168,0.3271,1456.3874,8.5228,58.0852,,,,,,,,,NORMAL,False,
+phase1_exp_10_10mps,LOCAL_ONLY,exp_10_devices_10mps_rep1,motor-004,motor,1,2026-01-01T00:00:00.300000Z,,,,,,57.7528,0.2358,1451.9772,8.626,64.3585,,,,,,,,,NORMAL,False,
+phase1_exp_10_10mps,LOCAL_ONLY,exp_10_devices_10mps_rep1,pump-001,pump,1,2026-01-01T00:00:00.400000Z,,,,,,50.2979,0.1703,,6.426,,3.6862,33.3105,,,,,,,NORMAL,False,
+phase1_exp_10_10mps,LOCAL_ONLY,exp_10_devices_10mps_rep1,pump-002,pump,1,2026-01-01T00:00:00.500000Z,,,,,,50.6549,0.2597,,6.4447,,3.4127,31.659,,,,,,,NORMAL,False,
+phase1_exp_10_10mps,LOCAL_ONLY,exp_10_devices_10mps_rep1,conveyor-001,conveyor,1,2026-01-01T00:00:00.600000Z,,,,,,,0.4069,,,57.0159,,,1.4803,7.6638,,,,,NORMAL,False,
+phase1_exp_10_10mps,LOCAL_ONLY,exp_10_devices_10mps_rep1,conveyor-002,conveyor,1,2026-01-01T00:00:00.700000Z,,,,,,,0.4842,,,64.0605,,,1.7753,8.2146,,,,,NORMAL,False,
+phase1_exp_10_10mps,LOCAL_ONLY,exp_10_devices_10mps_rep1,tank-001,tank,1,2026-01-01T00:00:00.800000Z,,,,,,,,,,,2.7256,,,,63.3081,16.6174,15.9636,OPEN,NORMAL,False,
+phase1_exp_10_10mps,LOCAL_ONLY,exp_10_devices_10mps_rep1,compressor-001,compressor,1,2026-01-01T00:00:00.900000Z,,,,,,62.2032,0.3022,,8.3742,,6.7864,,,,,,,,NORMAL,False,

@@ -99,11 +99,13 @@ def test_same_seed_produces_repeatable_jsonl(tmp_path: Path) -> None:
         base_config,
         duration_seconds=1.0,
         output=OutputConfig(format="jsonl", path=tmp_path / "first.jsonl"),
+        outputs=(),
     )
     second = replace(
         base_config,
         duration_seconds=1.0,
         output=OutputConfig(format="jsonl", path=tmp_path / "second.jsonl"),
+        outputs=(),
     )
 
     run_simulation(first)
@@ -164,6 +166,7 @@ def test_smoke_10_devices_10_mps_jsonl_is_parseable(tmp_path: Path) -> None:
         config,
         duration_seconds=1.0,
         output=OutputConfig(format="jsonl", path=tmp_path / "smoke.jsonl"),
+        outputs=(),
     )
 
     summary = run_simulation(run_config)
@@ -181,9 +184,58 @@ def test_smoke_100_devices_500_mps_completes(tmp_path: Path) -> None:
         config,
         duration_seconds=0.1,
         output=OutputConfig(format="jsonl", path=tmp_path / "stress.jsonl"),
+        outputs=(),
     )
 
     summary = run_simulation(run_config)
 
     assert summary["writtenMessages"] == 50
     assert run_config.output.path.exists()
+
+
+def test_multi_output_writes_jsonl_and_csv(tmp_path: Path) -> None:
+    config_path = tmp_path / "multi.yaml"
+    config_path.write_text(
+        f"""
+experimentId: multi
+scenario: LOCAL_ONLY
+runId: multi_run
+deviceCount: 10
+targetMessagesPerSecond: 10
+durationSeconds: 1
+seed: 42
+startTime: "2026-01-01T00:00:00Z"
+deviceMix:
+  motor: 4
+  pump: 2
+  conveyor: 2
+  tank: 1
+  compressor: 1
+outputs:
+  - format: jsonl
+    path: {tmp_path / "multi.jsonl"}
+  - format: csv
+    path: {tmp_path / "multi.csv"}
+faults:
+  enabled: true
+  schedules:
+    - deviceId: motor-001
+      anomalyType: bearing_fault
+      startSecond: 0
+      warningDurationSeconds: 0
+      faultDurationSeconds: 1
+      recoveryDurationSeconds: 0
+""",
+        encoding="utf-8",
+    )
+    config = load_config(config_path)
+
+    summary = run_simulation(config)
+    jsonl_lines = (tmp_path / "multi.jsonl").read_text(encoding="utf-8").splitlines()
+    csv_lines = (tmp_path / "multi.csv").read_text(encoding="utf-8").splitlines()
+
+    assert summary["writtenMessages"] == 10
+    assert summary["outputFormats"] == ["jsonl", "csv"]
+    assert len(jsonl_lines) == 10
+    assert len(csv_lines) == 11
+    assert "isAnomaly" in csv_lines[0]

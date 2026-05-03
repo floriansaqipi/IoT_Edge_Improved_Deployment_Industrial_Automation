@@ -13,9 +13,11 @@ deviceMix:
   conveyor: 20
   tank: 10
   compressor: 5
-output:
-  format: jsonl
-  path: ../results/exp_100_devices_500mps.jsonl
+outputs:
+  - format: jsonl
+    path: ../results/exp_100_devices_500mps.jsonl
+  - format: csv
+    path: ../results/exp_100_devices_500mps.csv
 faults:
   enabled: true
   schedules:

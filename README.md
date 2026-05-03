@@ -36,6 +36,20 @@ Generated run files are written under
 `simulator/industrial-opcua-simulator/results/` by default and are ignored by
 git.
 
+Generate paired JSONL and CSV outputs for all Phase 1 starter configs:
+
+```powershell
+.\scripts\run_phase1_outputs.ps1
+```
+
+The current two-laptop lab default is Machine A at `192.168.1.5` and Machine B
+at `192.168.1.3`. If OPC UA testing later needs a Windows Firewall exception,
+preview the reversible rule first:
+
+```powershell
+.\infrastructure\host-vm-setup\windows-firewall-opcua.ps1 -Action Show
+```
+
 ## Output Schema
 
 Each JSONL row is one full device update:
