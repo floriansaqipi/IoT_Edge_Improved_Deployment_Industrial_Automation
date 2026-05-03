@@ -1,0 +1,181 @@
+{
+  "modulesContent": {
+    "$edgeAgent": {
+      "properties.desired": {
+        "schemaVersion": "1.1",
+        "runtime": {
+          "type": "docker",
+          "settings": {
+            "minDockerVersion": "v1.25",
+            "loggingOptions": "",
+            "registryCredentials": {
+              "studyAcr": {
+                "username": "__ACR_USERNAME__",
+                "password": "__ACR_PASSWORD__",
+                "address": "__ACR_LOGIN_SERVER__"
+              }
+            }
+          }
+        },
+        "systemModules": {
+          "edgeAgent": {
+            "type": "docker",
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-agent:1.5",
+              "createOptions": "{}"
+            }
+          },
+          "edgeHub": {
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "mcr.microsoft.com/azureiotedge-hub:1.5",
+              "createOptions": "{}"
+            }
+          }
+        },
+        "modules": {
+          "opcua-collector": {
+            "version": "0.1.1",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "__ACR_LOGIN_SERVER__/opcua-collector:__COLLECTOR_IMAGE_TAG__",
+              "createOptions": "{}"
+            },
+            "env": {
+              "OPCUA_ENDPOINT": {
+                "value": "opc.tcp://192.168.1.5:4840/factory/server"
+              },
+              "OPCUA_NAMESPACE_URI": {
+                "value": "urn:industrial-automation:azure-iot-edge-study"
+              },
+              "OUTPUT_NAME": {
+                "value": "telemetry"
+              },
+              "SCENARIO_FALLBACK": {
+                "value": "S2_HYBRID"
+              },
+              "RECONNECT_SECONDS": {
+                "value": "5"
+              }
+            }
+          },
+          "normalizer-validator": {
+            "version": "0.1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "__ACR_LOGIN_SERVER__/normalizer-validator:__PHASE4_IMAGE_TAG__",
+              "createOptions": "{}"
+            }
+          },
+          "filter-aggregator": {
+            "version": "0.1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "__ACR_LOGIN_SERVER__/filter-aggregator:__PHASE4_IMAGE_TAG__",
+              "createOptions": "{}"
+            },
+            "env": {
+              "CLOUD_OUTPUT_POLICY": {
+                "value": "sampled_10_percent"
+              },
+              "SAMPLE_EVERY": {
+                "value": "10"
+              },
+              "CLOUD_MAX_MESSAGES_PER_SECOND": {
+                "value": "9"
+              }
+            }
+          },
+          "anomaly-detector": {
+            "version": "0.1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "__ACR_LOGIN_SERVER__/anomaly-detector:__PHASE4_IMAGE_TAG__",
+              "createOptions": "{}"
+            }
+          },
+          "local-alert-service": {
+            "version": "0.1.0",
+            "type": "docker",
+            "status": "running",
+            "restartPolicy": "always",
+            "settings": {
+              "image": "__ACR_LOGIN_SERVER__/local-alert-service:__PHASE4_IMAGE_TAG__",
+              "createOptions": "{\"HostConfig\":{\"Binds\":[\"/home/floriansaqipi/iot_edge_study/alerts:/var/lib/edge-study/alerts\"]}}"
+            },
+            "env": {
+              "ALERT_LOG_PATH": {
+                "value": "/var/lib/edge-study/alerts/s2_alerts.jsonl"
+              }
+            }
+          }
+        }
+      }
+    },
+    "$edgeHub": {
+      "properties.desired": {
+        "schemaVersion": "1.1",
+        "routes": {
+          "collectorToNormalizer": {
+            "route": "FROM /messages/modules/opcua-collector/outputs/telemetry INTO BrokeredEndpoint(\"/modules/normalizer-validator/inputs/input1\")",
+            "priority": 3,
+            "timeToLiveSecs": 7200
+          },
+          "normalizerToFilter": {
+            "route": "FROM /messages/modules/normalizer-validator/outputs/normalized INTO BrokeredEndpoint(\"/modules/filter-aggregator/inputs/input1\")",
+            "priority": 3,
+            "timeToLiveSecs": 7200
+          },
+          "filterToAnomaly": {
+            "route": "FROM /messages/modules/filter-aggregator/outputs/filtered INTO BrokeredEndpoint(\"/modules/anomaly-detector/inputs/input1\")",
+            "priority": 3,
+            "timeToLiveSecs": 7200
+          },
+          "anomalyTelemetryToCloud": {
+            "route": "FROM /messages/modules/anomaly-detector/outputs/telemetry INTO $upstream",
+            "priority": 5,
+            "timeToLiveSecs": 7200
+          },
+          "anomalyToAlert": {
+            "route": "FROM /messages/modules/anomaly-detector/outputs/alerts INTO BrokeredEndpoint(\"/modules/local-alert-service/inputs/input1\")",
+            "priority": 0,
+            "timeToLiveSecs": 7200
+          },
+          "alertToCloud": {
+            "route": "FROM /messages/modules/local-alert-service/outputs/alerts INTO $upstream",
+            "priority": 0,
+            "timeToLiveSecs": 7200
+          }
+        },
+        "storeAndForwardConfiguration": {
+          "timeToLiveSecs": 7200
+        }
+      }
+    },
+    "opcua-collector": {
+      "properties.desired": {}
+    },
+    "normalizer-validator": {
+      "properties.desired": {}
+    },
+    "filter-aggregator": {
+      "properties.desired": {}
+    },
+    "anomaly-detector": {
+      "properties.desired": {}
+    },
+    "local-alert-service": {
+      "properties.desired": {}
+    }
+  }
+}
