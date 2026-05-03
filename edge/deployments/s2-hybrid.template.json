@@ -58,6 +58,9 @@
               "SCENARIO_FALLBACK": {
                 "value": "S2_HYBRID"
               },
+              "SCENARIO_OVERRIDE": {
+                "value": "S2_HYBRID"
+              },
               "RECONNECT_SECONDS": {
                 "value": "5"
               }

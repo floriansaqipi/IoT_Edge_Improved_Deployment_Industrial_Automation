@@ -86,6 +86,12 @@ class OpcUaSnapshotReader:
             raw_value = await self._read_optional(experiment_node_string_id(node_name))
             value = str(raw_value).strip() if raw_value is not None else ""
             metadata[node_name] = value or fallback[node_name]
+        if self.config.experiment_id_override is not None:
+            metadata["ExperimentId"] = self.config.experiment_id_override
+        if self.config.scenario_override is not None:
+            metadata["Scenario"] = self.config.scenario_override
+        if self.config.run_id_override is not None:
+            metadata["RunId"] = self.config.run_id_override
         return metadata
 
     async def subscribe_sequence_changes(

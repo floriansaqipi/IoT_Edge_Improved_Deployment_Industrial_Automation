@@ -61,6 +61,9 @@
               "SCENARIO_FALLBACK": {
                 "value": "S1_EDGE_PASS_THROUGH"
               },
+              "SCENARIO_OVERRIDE": {
+                "value": "S1_EDGE_PASS_THROUGH"
+              },
               "RUN_ID_FALLBACK": {
                 "value": "phase3_s1_rep1"
               },

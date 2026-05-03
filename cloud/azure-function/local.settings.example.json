@@ -1,0 +1,11 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "<storage-account-connection-string>",
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "IOTHUB_EVENTHUB_CONNECTION": "<iot-hub-eventhub-compatible-connection-string>",
+    "IOTHUB_EVENTHUB_NAME": "<iot-hub-eventhub-compatible-name>",
+    "IOTHUB_CONSUMER_GROUP": "cloudproc",
+    "CLOUD_RESULTS_STORAGE_CONNECTION_STRING": "<storage-account-connection-string>"
+  }
+}

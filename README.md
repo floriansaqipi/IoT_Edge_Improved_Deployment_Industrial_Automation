@@ -133,6 +133,31 @@ The checked matrix is `experiments/budgeted_800k_matrix.yaml`; its planned cloud
 total is 544,320 billable messages, below the 640,000 operational planning
 ceiling.
 
+## Run Phase 5 Cloud Path
+
+Phase 5 adds the S0 cloud-only publisher and Azure cloud processor. S0 runs as a
+plain Docker container on Machine B, not as an IoT Edge module:
+
+```text
+Machine A OPC UA simulator -> Machine B s0-cloud-publisher -> IoT Hub -> Azure Function -> Table Storage
+```
+
+Package the Function App:
+
+```powershell
+.\scripts\package_phase5_function.ps1
+```
+
+Export cloud results after a smoke or matrix run:
+
+```powershell
+$env:CLOUD_RESULTS_STORAGE_CONNECTION_STRING = "<storage-account-connection-string>"
+.\scripts\export_cloud_results.ps1
+Remove-Item Env:\CLOUD_RESULTS_STORAGE_CONNECTION_STRING
+```
+
+Detailed Azure commands live in `infrastructure/azure/phase5-cloud-path.md`.
+
 ## Output Schema
 
 Each JSONL row is one full device update:

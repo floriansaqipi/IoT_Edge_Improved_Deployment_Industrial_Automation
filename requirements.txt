@@ -2,5 +2,7 @@ numpy>=1.26,<3
 pyyaml>=6.0,<7
 asyncua>=1.1,<2
 azure-iot-device>=2.14,<3
+azure-data-tables>=12.5,<13
+azure-functions>=1.21,<2
 pytest>=8.0,<9
 ruff>=0.6,<1

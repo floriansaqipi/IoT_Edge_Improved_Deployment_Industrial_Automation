@@ -214,6 +214,11 @@ simulator/industrial-opcua-simulator/results/*
 edge/deployments/*.generated.json
 edge/deployments/*.local.json
 .env.phase3.local
+.env.phase5.local
+
+# Local/rendered Phase 5 cloud artifacts
+cloud/azure-function/dist/
+cloud/results/
 
 # PyPI configuration file
 .pypirc
