@@ -2,3 +2,4 @@
 {"details": {"scenario": "S2_HYBRID"}, "event": "scenario_ready", "timestamp": "2026-05-04T02:44:33.127260Z"}
 {"details": {"command": ["E:\\Documents\\uni\\master\\Sosh\\IoT_Edge_Improved_Deployment_Industrial_Automation\\.venv\\Scripts\\python.exe", "E:\\Documents\\uni\\master\\Sosh\\IoT_Edge_Improved_Deployment_Industrial_Automation\\simulator\\industrial-opcua-simulator\\src\\main.py", "E:\\Documents\\uni\\master\\Sosh\\IoT_Edge_Improved_Deployment_Industrial_Automation\\results\\experiments\\full_20260504_013601\\s2_90_outage_120\\rep_2\\simulator_config.yaml", "--mode", "both", "--realtime"]}, "event": "simulator_start", "timestamp": "2026-05-04T02:44:33.128267Z"}
 {"details": {}, "event": "cloud_outage_started", "timestamp": "2026-05-04T02:46:51.069812Z"}
+{"details": {}, "event": "cloud_outage_cleared", "timestamp": "2026-05-04T02:48:52.822076Z"}
