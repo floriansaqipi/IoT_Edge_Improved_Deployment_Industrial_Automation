@@ -1,7 +1,7 @@
 {
   "campaignDir": "E:\\Documents\\uni\\master\\Sosh\\IoT_Edge_Improved_Deployment_Industrial_Automation\\results\\experiments\\full_20260504_013601",
   "campaignId": "full_20260504_013601",
-  "completed": 25,
+  "completed": 26,
   "currentRun": {
     "block": "cloud_outage_recovery",
     "campaignId": "full_20260504_013601",
@@ -13,14 +13,14 @@
     "matrixId": "budgeted_800k_s0_s1_s2",
     "networkCondition": "cloud_outage_120s",
     "plannedCloudMessageEstimate": 2700,
-    "repetition": 1,
+    "repetition": 2,
     "repetitions": 3,
     "rowId": "s2_90_outage_120",
-    "runId": "s2_90_outage_120_rep1_full_20260504_013601",
+    "runId": "s2_90_outage_120_rep2_full_20260504_013601",
     "scenario": "S2_HYBRID",
     "targetMessagesPerSecond": 90.0
   },
   "plannedRunCount": 36,
   "status": "running",
-  "updatedAt": "2026-05-04T02:44:20.830560Z"
+  "updatedAt": "2026-05-04T02:51:45.764630Z"
 }

@@ -1,0 +1,26 @@
+{
+  "campaignId": "full_20260504_013601",
+  "index": 27,
+  "run": {
+    "block": "cloud_outage_recovery",
+    "campaignId": "full_20260504_013601",
+    "cloudMessagesPerSecond": 9.0,
+    "cloudOutputPolicy": "sampled_10_percent",
+    "durationSeconds": 300.0,
+    "estimatedBillableMessages": 2700,
+    "generatedMessageEstimate": 27000,
+    "matrixId": "budgeted_800k_s0_s1_s2",
+    "networkCondition": "cloud_outage_120s",
+    "plannedCloudMessageEstimate": 2700,
+    "repetition": 3,
+    "repetitions": 3,
+    "rowId": "s2_90_outage_120",
+    "runId": "s2_90_outage_120_rep3_full_20260504_013601",
+    "scenario": "S2_HYBRID",
+    "targetMessagesPerSecond": 90.0
+  },
+  "startedAt": "2026-05-04T02:51:45.764630Z",
+  "status": "running",
+  "total": 36,
+  "updatedAt": "2026-05-04T02:51:45.764630Z"
+}
