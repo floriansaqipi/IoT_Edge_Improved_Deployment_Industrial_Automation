@@ -1,0 +1,58 @@
+experimentId: budgeted_800k_s0_s1_s2
+scenario: S2_HYBRID
+runId: s2_90_delay_200_rep1_full_20260504_013601
+runMode: both
+deviceCount: 100
+targetMessagesPerSecond: 90
+durationSeconds: 300
+seed: 60716
+startTime: '2026-01-01T00:00:00Z'
+paceRealtime: true
+warmupSeconds: 45
+opcua:
+  endpoint: opc.tcp://0.0.0.0:4840/factory/server
+  namespaceUri: urn:industrial-automation:azure-iot-edge-study
+deviceMix:
+  motor: 40
+  pump: 25
+  conveyor: 20
+  tank: 10
+  compressor: 5
+outputs:
+- format: jsonl
+  path: E:\Documents\uni\master\Sosh\IoT_Edge_Improved_Deployment_Industrial_Automation\results\experiments\full_20260504_013601\s2_90_delay_200\rep_1\simulator.jsonl
+- format: csv
+  path: E:\Documents\uni\master\Sosh\IoT_Edge_Improved_Deployment_Industrial_Automation\results\experiments\full_20260504_013601\s2_90_delay_200\rep_1\simulator.csv
+faults:
+  enabled: true
+  schedules:
+  - deviceId: motor-014
+    anomalyType: bearing_fault
+    startSecond: 30
+    warningDurationSeconds: 20
+    faultDurationSeconds: 90
+    recoveryDurationSeconds: 30
+  - deviceId: pump-011
+    anomalyType: blockage
+    startSecond: 100
+    warningDurationSeconds: 20
+    faultDurationSeconds: 80
+    recoveryDurationSeconds: 30
+  - deviceId: conveyor-009
+    anomalyType: jam
+    startSecond: 40
+    warningDurationSeconds: 10
+    faultDurationSeconds: 30
+    recoveryDurationSeconds: 10
+  - deviceId: tank-004
+    anomalyType: overflow_risk
+    startSecond: 45
+    warningDurationSeconds: 10
+    faultDurationSeconds: 35
+    recoveryDurationSeconds: 10
+  - deviceId: compressor-002
+    anomalyType: pressure_instability
+    startSecond: 20
+    warningDurationSeconds: 10
+    faultDurationSeconds: 35
+    recoveryDurationSeconds: 10

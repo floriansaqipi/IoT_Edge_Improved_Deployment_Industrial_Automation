@@ -1,0 +1,54 @@
+{
+  "actions": [
+    "deploy S1 Edge manifest",
+    "start Machine A OPC UA simulator",
+    "forward OPC UA collector output through Edge Hub",
+    "cap S1 cloud output at 90 msg/s for stress rows"
+  ],
+  "network": {
+    "applyCommand": null,
+    "clearCommand": "sudo /home/floriansaqipi/iot_edge_study/ubuntu-network-emulation.sh --host iothub-edge-study-florian01.azure-devices.net --ports 443,5671,8883 clear",
+    "condition": "normal",
+    "outageDurationSecond": null,
+    "outageStartSecond": null,
+    "recoveryDurationSecond": null,
+    "showCommand": "sudo /home/floriansaqipi/iot_edge_study/ubuntu-network-emulation.sh --host iothub-edge-study-florian01.azure-devices.net --ports 443,5671,8883 show"
+  },
+  "paths": {
+    "events": "E:\\Documents\\uni\\master\\Sosh\\IoT_Edge_Improved_Deployment_Industrial_Automation\\results\\experiments\\smoke_20260504_003220\\s1_90_normal\\rep_1\\events.jsonl",
+    "runDir": "E:\\Documents\\uni\\master\\Sosh\\IoT_Edge_Improved_Deployment_Industrial_Automation\\results\\experiments\\smoke_20260504_003220\\s1_90_normal\\rep_1",
+    "simulatorConfig": "E:\\Documents\\uni\\master\\Sosh\\IoT_Edge_Improved_Deployment_Industrial_Automation\\results\\experiments\\smoke_20260504_003220\\s1_90_normal\\rep_1\\simulator_config.yaml",
+    "simulatorCsv": "E:\\Documents\\uni\\master\\Sosh\\IoT_Edge_Improved_Deployment_Industrial_Automation\\results\\experiments\\smoke_20260504_003220\\s1_90_normal\\rep_1\\simulator.csv",
+    "simulatorJsonl": "E:\\Documents\\uni\\master\\Sosh\\IoT_Edge_Improved_Deployment_Industrial_Automation\\results\\experiments\\smoke_20260504_003220\\s1_90_normal\\rep_1\\simulator.jsonl"
+  },
+  "run": {
+    "block": "normal_network",
+    "campaignId": "smoke_20260504_003220",
+    "cloudMessagesPerSecond": 90.0,
+    "cloudOutputPolicy": "full",
+    "durationSeconds": 60,
+    "estimatedBillableMessages": 27000,
+    "generatedMessageEstimate": 5400,
+    "matrixId": "budgeted_800k_s0_s1_s2",
+    "networkCondition": "normal",
+    "plannedCloudMessageEstimate": 5400,
+    "repetition": 1,
+    "repetitions": 3,
+    "rowId": "s1_90_normal",
+    "runId": "s1_90_normal_rep1_smoke_20260504_003220",
+    "scenario": "S1_EDGE_PASS_THROUGH",
+    "targetMessagesPerSecond": 90.0
+  },
+  "settings": {
+    "acrLoginServer": "acredgestudyflorian01.azurecr.io",
+    "collectorImageTag": "0.1.2-amd64",
+    "edgeDeviceId": "edge-gateway-b-ubuntu",
+    "iotHubName": "iothub-edge-study-florian01",
+    "machineA": "192.168.1.5",
+    "machineB": "192.168.1.3",
+    "opcuaEndpoint": "opc.tcp://192.168.1.5:4840/factory/server",
+    "phase4ImageTag": "0.1.0-amd64",
+    "s0DeviceId": "s0-cloud-publisher-b",
+    "s0ImageTag": "0.1.0-amd64"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "cloudAlertRows": 25,
+  "cloudInvalidRows": 0,
+  "cloudTelemetryRows": 5357,
+  "completedAt": "2026-05-03T23:14:51.646599Z",
+  "networkCondition": "normal",
+  "plannedCloudMessages": 5400,
+  "runId": "s1_90_normal_rep1_smoke_20260504_010740",
+  "scenario": "S1_EDGE_PASS_THROUGH",
+  "simulatorCsvRows": 5400,
+  "simulatorJsonlRows": 5400
+}

@@ -1,0 +1,44 @@
+{
+  "modulesContent": {
+    "$edgeAgent": {
+      "properties.desired": {
+        "modules": {},
+        "runtime": {
+          "settings": {
+            "loggingOptions": "",
+            "minDockerVersion": "v1.25"
+          },
+          "type": "docker"
+        },
+        "schemaVersion": "1.1",
+        "systemModules": {
+          "edgeAgent": {
+            "settings": {
+              "createOptions": "{}",
+              "image": "mcr.microsoft.com/azureiotedge-agent:1.5"
+            },
+            "type": "docker"
+          },
+          "edgeHub": {
+            "restartPolicy": "always",
+            "settings": {
+              "createOptions": "{}",
+              "image": "mcr.microsoft.com/azureiotedge-hub:1.5"
+            },
+            "status": "running",
+            "type": "docker"
+          }
+        }
+      }
+    },
+    "$edgeHub": {
+      "properties.desired": {
+        "routes": {},
+        "schemaVersion": "1.1",
+        "storeAndForwardConfiguration": {
+          "timeToLiveSecs": 7200
+        }
+      }
+    }
+  }
+}

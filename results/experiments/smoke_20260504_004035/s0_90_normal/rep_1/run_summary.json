@@ -1,0 +1,12 @@
+{
+  "cloudAlertRows": 0,
+  "cloudInvalidRows": 0,
+  "cloudTelemetryRows": 211,
+  "completedAt": "2026-05-03T22:42:45.089020Z",
+  "networkCondition": "normal",
+  "plannedCloudMessages": 5400,
+  "runId": "s0_90_normal_rep1_smoke_20260504_004035",
+  "scenario": "S0_CLOUD_ONLY",
+  "simulatorCsvRows": 4129,
+  "simulatorJsonlRows": 4155
+}

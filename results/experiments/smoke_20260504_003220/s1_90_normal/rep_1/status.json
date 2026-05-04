@@ -1,0 +1,26 @@
+{
+  "campaignId": "smoke_20260504_003220",
+  "index": 2,
+  "run": {
+    "block": "normal_network",
+    "campaignId": "smoke_20260504_003220",
+    "cloudMessagesPerSecond": 90.0,
+    "cloudOutputPolicy": "full",
+    "durationSeconds": 60,
+    "estimatedBillableMessages": 27000,
+    "generatedMessageEstimate": 5400,
+    "matrixId": "budgeted_800k_s0_s1_s2",
+    "networkCondition": "normal",
+    "plannedCloudMessageEstimate": 5400,
+    "repetition": 1,
+    "repetitions": 3,
+    "rowId": "s1_90_normal",
+    "runId": "s1_90_normal_rep1_smoke_20260504_003220",
+    "scenario": "S1_EDGE_PASS_THROUGH",
+    "targetMessagesPerSecond": 90.0
+  },
+  "startedAt": "2026-05-03T22:34:30.695043Z",
+  "status": "running",
+  "total": 3,
+  "updatedAt": "2026-05-03T22:34:30.695043Z"
+}

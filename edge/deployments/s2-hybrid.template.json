@@ -63,6 +63,15 @@
               },
               "RECONNECT_SECONDS": {
                 "value": "5"
+              },
+              "SEND_WORKER_COUNT": {
+                "value": "16"
+              },
+              "SEND_QUEUE_MAXSIZE": {
+                "value": "10000"
+              },
+              "LOG_LEVEL": {
+                "value": "WARNING"
               }
             }
           },
@@ -74,6 +83,11 @@
             "settings": {
               "image": "__ACR_LOGIN_SERVER__/normalizer-validator:__PHASE4_IMAGE_TAG__",
               "createOptions": "{}"
+            },
+            "env": {
+              "LOG_LEVEL": {
+                "value": "WARNING"
+              }
             }
           },
           "filter-aggregator": {
@@ -94,6 +108,9 @@
               },
               "CLOUD_MAX_MESSAGES_PER_SECOND": {
                 "value": "9"
+              },
+              "LOG_LEVEL": {
+                "value": "WARNING"
               }
             }
           },
@@ -105,6 +122,11 @@
             "settings": {
               "image": "__ACR_LOGIN_SERVER__/anomaly-detector:__PHASE4_IMAGE_TAG__",
               "createOptions": "{}"
+            },
+            "env": {
+              "LOG_LEVEL": {
+                "value": "WARNING"
+              }
             }
           },
           "local-alert-service": {
@@ -119,6 +141,9 @@
             "env": {
               "ALERT_LOG_PATH": {
                 "value": "/var/lib/edge-study/alerts/s2_alerts.jsonl"
+              },
+              "LOG_LEVEL": {
+                "value": "WARNING"
               }
             }
           }

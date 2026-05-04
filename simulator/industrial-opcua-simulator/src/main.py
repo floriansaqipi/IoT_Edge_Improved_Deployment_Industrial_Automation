@@ -106,6 +106,9 @@ async def run_opcua_simulation(config: SimulationConfig) -> dict[str, Any]:
         "RunId": config.run_id,
     }
     async with IndustrialOpcUaServer(config.opcua, devices, experiment_metadata) as opcua_server:
+        if config.warmup_seconds > 0:
+            await asyncio.sleep(config.warmup_seconds)
+        wall_start = time.perf_counter()
         logger_context = MultiGroundTruthLogger(outputs) if writes_ground_truth else nullcontext(None)
         with logger_context as logger:
             while config.until_stopped or message_index < total_messages:
@@ -141,6 +144,7 @@ async def run_opcua_simulation(config: SimulationConfig) -> dict[str, Any]:
         "outputPaths": [str(output.path) for output in config.all_outputs] if writes_ground_truth else [],
         "outputFormats": [output.format for output in config.all_outputs] if writes_ground_truth else [],
         "paceRealtime": config.pace_realtime,
+        "warmupSeconds": config.warmup_seconds,
         "untilStopped": config.until_stopped,
         "opcuaEndpoint": config.opcua.endpoint,
         "opcuaNamespaceUri": config.opcua.namespace_uri,

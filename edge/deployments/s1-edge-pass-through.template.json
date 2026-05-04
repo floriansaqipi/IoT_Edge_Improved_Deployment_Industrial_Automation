@@ -67,8 +67,26 @@
               "RUN_ID_FALLBACK": {
                 "value": "phase3_s1_rep1"
               },
+              "CLOUD_OUTPUT_POLICY": {
+                "value": "full"
+              },
+              "SAMPLE_EVERY": {
+                "value": "10"
+              },
+              "CLOUD_MAX_MESSAGES_PER_SECOND": {
+                "value": "90"
+              },
               "RECONNECT_SECONDS": {
                 "value": "5"
+              },
+              "SEND_WORKER_COUNT": {
+                "value": "16"
+              },
+              "SEND_QUEUE_MAXSIZE": {
+                "value": "10000"
+              },
+              "LOG_LEVEL": {
+                "value": "WARNING"
               }
             }
           }

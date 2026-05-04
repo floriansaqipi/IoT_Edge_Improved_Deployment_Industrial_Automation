@@ -1,0 +1,117 @@
+{
+  "modulesContent": {
+    "$edgeAgent": {
+      "properties.desired": {
+        "modules": {
+          "opcua-collector": {
+            "env": {
+              "CLOUD_MAX_MESSAGES_PER_SECOND": {
+                "value": "90"
+              },
+              "CLOUD_OUTPUT_POLICY": {
+                "value": "full"
+              },
+              "EXPERIMENT_ID_FALLBACK": {
+                "value": "phase3_s1"
+              },
+              "EXPERIMENT_ID_OVERRIDE": {
+                "value": "budgeted_800k_s0_s1_s2"
+              },
+              "LOG_LEVEL": {
+                "value": "WARNING"
+              },
+              "OPCUA_ENDPOINT": {
+                "value": "opc.tcp://192.168.1.5:4840/factory/server"
+              },
+              "OPCUA_NAMESPACE_URI": {
+                "value": "urn:industrial-automation:azure-iot-edge-study"
+              },
+              "OUTPUT_NAME": {
+                "value": "telemetry"
+              },
+              "RECONNECT_SECONDS": {
+                "value": "5"
+              },
+              "RUN_ID_FALLBACK": {
+                "value": "phase3_s1_rep1"
+              },
+              "RUN_ID_OVERRIDE": {
+                "value": "s1_90_normal_rep1_full_20260504_013601"
+              },
+              "SAMPLE_EVERY": {
+                "value": "10"
+              },
+              "SCENARIO_FALLBACK": {
+                "value": "S1_EDGE_PASS_THROUGH"
+              },
+              "SCENARIO_OVERRIDE": {
+                "value": "S1_EDGE_PASS_THROUGH"
+              },
+              "SEND_QUEUE_MAXSIZE": {
+                "value": "10000"
+              },
+              "SEND_WORKER_COUNT": {
+                "value": "16"
+              }
+            },
+            "restartPolicy": "always",
+            "settings": {
+              "createOptions": "{}",
+              "image": "acredgestudyflorian01.azurecr.io/opcua-collector:0.1.2-amd64"
+            },
+            "status": "running",
+            "type": "docker",
+            "version": "0.1.0"
+          }
+        },
+        "runtime": {
+          "settings": {
+            "loggingOptions": "",
+            "minDockerVersion": "v1.25",
+            "registryCredentials": {
+              "studyAcr": {
+                "address": "acredgestudyflorian01.azurecr.io",
+                "password": "CJVRet3ZrEpXrR0TwV00J39mT57k84KpgE5DAzXhZoEADBpiaTXaJQQJ99CEACI8hq2Eqg7NAAACAZCRq8gp",
+                "username": "acredgestudyflorian01"
+              }
+            }
+          },
+          "type": "docker"
+        },
+        "schemaVersion": "1.1",
+        "systemModules": {
+          "edgeAgent": {
+            "settings": {
+              "createOptions": "{}",
+              "image": "mcr.microsoft.com/azureiotedge-agent:1.5"
+            },
+            "type": "docker"
+          },
+          "edgeHub": {
+            "restartPolicy": "always",
+            "settings": {
+              "createOptions": "{}",
+              "image": "mcr.microsoft.com/azureiotedge-hub:1.5"
+            },
+            "status": "running",
+            "type": "docker"
+          }
+        }
+      }
+    },
+    "$edgeHub": {
+      "properties.desired": {
+        "routes": {
+          "collectorToCloud": "FROM /messages/modules/opcua-collector/outputs/telemetry INTO $upstream"
+        },
+        "schemaVersion": "1.1",
+        "storeAndForwardConfiguration": {
+          "timeToLiveSecs": 7200
+        }
+      }
+    },
+    "opcua-collector": {
+      "properties.desired": {}
+    }
+  }
+}

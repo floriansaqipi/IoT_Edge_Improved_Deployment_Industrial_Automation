@@ -98,6 +98,7 @@ class SimulationConfig:
     seed: int
     start_time: datetime
     pace_realtime: bool
+    warmup_seconds: float
     until_stopped: bool
     device_mix: dict[str, int]
     output: OutputConfig
@@ -143,6 +144,7 @@ def load_config(path: str | Path) -> SimulationConfig:
         seed=_required_int(raw, "seed"),
         start_time=_parse_start_time(raw.get("startTime")),
         pace_realtime=bool(raw.get("paceRealtime", False)),
+        warmup_seconds=float(raw.get("warmupSeconds", 0)),
         until_stopped=bool(raw.get("untilStopped", False)),
         device_mix=device_mix,
         output=output,
@@ -333,6 +335,8 @@ def _validate_config(config: SimulationConfig) -> None:
         raise ConfigError("targetMessagesPerSecond must be greater than zero.")
     if config.duration_seconds <= 0:
         raise ConfigError("durationSeconds must be greater than zero.")
+    if config.warmup_seconds < 0:
+        raise ConfigError("warmupSeconds must not be negative.")
     if config.expected_message_count <= 0:
         raise ConfigError("Experiment must produce at least one message.")
     if config.until_stopped and config.run_mode == "file":

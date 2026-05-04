@@ -132,6 +132,10 @@ def test_phase4_in_memory_s2_pipeline_samples_and_alerts(tmp_path: Path) -> None
     filter_aggregator = FilterAggregator(sample_every=10, max_messages_per_second=9)
     alert_service = LocalAlertService(tmp_path / "alerts.jsonl")
 
+    for sequence in range(1, 10):
+        normalized = normalize_record(_record("motor", sequence=sequence))[0].payload
+        filter_aggregator.process_record(normalized, elapsed_seconds=0.0)
+
     normalized = normalize_record(_record("motor", sequence=10))[0].payload
     filtered = filter_aggregator.process_record(normalized, elapsed_seconds=0.0)[0].payload
     telemetry_outputs = detect_record(filtered)

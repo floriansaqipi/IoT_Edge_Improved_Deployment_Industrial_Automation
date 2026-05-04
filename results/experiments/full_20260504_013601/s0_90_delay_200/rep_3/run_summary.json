@@ -1,0 +1,12 @@
+{
+  "cloudAlertRows": 189,
+  "cloudInvalidRows": 0,
+  "cloudTelemetryRows": 14507,
+  "completedAt": "2026-05-04T01:06:10.445673Z",
+  "networkCondition": "delay_200ms",
+  "plannedCloudMessages": 27000,
+  "runId": "s0_90_delay_200_rep3_full_20260504_013601",
+  "scenario": "S0_CLOUD_ONLY",
+  "simulatorCsvRows": 27000,
+  "simulatorJsonlRows": 27000
+}

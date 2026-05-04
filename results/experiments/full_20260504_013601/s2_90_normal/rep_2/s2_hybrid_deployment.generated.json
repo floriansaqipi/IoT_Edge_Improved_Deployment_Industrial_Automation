@@ -1,0 +1,215 @@
+{
+  "modulesContent": {
+    "$edgeAgent": {
+      "properties.desired": {
+        "modules": {
+          "anomaly-detector": {
+            "env": {
+              "LOG_LEVEL": {
+                "value": "WARNING"
+              }
+            },
+            "restartPolicy": "always",
+            "settings": {
+              "createOptions": "{}",
+              "image": "acredgestudyflorian01.azurecr.io/anomaly-detector:0.1.0-amd64"
+            },
+            "status": "running",
+            "type": "docker",
+            "version": "0.1.0"
+          },
+          "filter-aggregator": {
+            "env": {
+              "CLOUD_MAX_MESSAGES_PER_SECOND": {
+                "value": "9"
+              },
+              "CLOUD_OUTPUT_POLICY": {
+                "value": "sampled_10_percent"
+              },
+              "LOG_LEVEL": {
+                "value": "WARNING"
+              },
+              "SAMPLE_EVERY": {
+                "value": "10"
+              }
+            },
+            "restartPolicy": "always",
+            "settings": {
+              "createOptions": "{}",
+              "image": "acredgestudyflorian01.azurecr.io/filter-aggregator:0.1.0-amd64"
+            },
+            "status": "running",
+            "type": "docker",
+            "version": "0.1.0"
+          },
+          "local-alert-service": {
+            "env": {
+              "ALERT_LOG_PATH": {
+                "value": "/var/lib/edge-study/alerts/s2_alerts.jsonl"
+              },
+              "LOG_LEVEL": {
+                "value": "WARNING"
+              }
+            },
+            "restartPolicy": "always",
+            "settings": {
+              "createOptions": "{\"HostConfig\":{\"Binds\":[\"/home/floriansaqipi/iot_edge_study/alerts:/var/lib/edge-study/alerts\"]}}",
+              "image": "acredgestudyflorian01.azurecr.io/local-alert-service:0.1.0-amd64"
+            },
+            "status": "running",
+            "type": "docker",
+            "version": "0.1.0"
+          },
+          "normalizer-validator": {
+            "env": {
+              "LOG_LEVEL": {
+                "value": "WARNING"
+              }
+            },
+            "restartPolicy": "always",
+            "settings": {
+              "createOptions": "{}",
+              "image": "acredgestudyflorian01.azurecr.io/normalizer-validator:0.1.0-amd64"
+            },
+            "status": "running",
+            "type": "docker",
+            "version": "0.1.0"
+          },
+          "opcua-collector": {
+            "env": {
+              "EXPERIMENT_ID_OVERRIDE": {
+                "value": "budgeted_800k_s0_s1_s2"
+              },
+              "LOG_LEVEL": {
+                "value": "WARNING"
+              },
+              "OPCUA_ENDPOINT": {
+                "value": "opc.tcp://192.168.1.5:4840/factory/server"
+              },
+              "OPCUA_NAMESPACE_URI": {
+                "value": "urn:industrial-automation:azure-iot-edge-study"
+              },
+              "OUTPUT_NAME": {
+                "value": "telemetry"
+              },
+              "RECONNECT_SECONDS": {
+                "value": "5"
+              },
+              "RUN_ID_OVERRIDE": {
+                "value": "s2_90_normal_rep2_full_20260504_013601"
+              },
+              "SCENARIO_FALLBACK": {
+                "value": "S2_HYBRID"
+              },
+              "SCENARIO_OVERRIDE": {
+                "value": "S2_HYBRID"
+              },
+              "SEND_QUEUE_MAXSIZE": {
+                "value": "10000"
+              },
+              "SEND_WORKER_COUNT": {
+                "value": "16"
+              }
+            },
+            "restartPolicy": "always",
+            "settings": {
+              "createOptions": "{}",
+              "image": "acredgestudyflorian01.azurecr.io/opcua-collector:0.1.2-amd64"
+            },
+            "status": "running",
+            "type": "docker",
+            "version": "0.1.1"
+          }
+        },
+        "runtime": {
+          "settings": {
+            "loggingOptions": "",
+            "minDockerVersion": "v1.25",
+            "registryCredentials": {
+              "studyAcr": {
+                "address": "acredgestudyflorian01.azurecr.io",
+                "password": "CJVRet3ZrEpXrR0TwV00J39mT57k84KpgE5DAzXhZoEADBpiaTXaJQQJ99CEACI8hq2Eqg7NAAACAZCRq8gp",
+                "username": "acredgestudyflorian01"
+              }
+            }
+          },
+          "type": "docker"
+        },
+        "schemaVersion": "1.1",
+        "systemModules": {
+          "edgeAgent": {
+            "settings": {
+              "createOptions": "{}",
+              "image": "mcr.microsoft.com/azureiotedge-agent:1.5"
+            },
+            "type": "docker"
+          },
+          "edgeHub": {
+            "restartPolicy": "always",
+            "settings": {
+              "createOptions": "{}",
+              "image": "mcr.microsoft.com/azureiotedge-hub:1.5"
+            },
+            "status": "running",
+            "type": "docker"
+          }
+        }
+      }
+    },
+    "$edgeHub": {
+      "properties.desired": {
+        "routes": {
+          "alertToCloud": {
+            "priority": 0,
+            "route": "FROM /messages/modules/local-alert-service/outputs/alerts INTO $upstream",
+            "timeToLiveSecs": 7200
+          },
+          "anomalyTelemetryToCloud": {
+            "priority": 5,
+            "route": "FROM /messages/modules/anomaly-detector/outputs/telemetry INTO $upstream",
+            "timeToLiveSecs": 7200
+          },
+          "anomalyToAlert": {
+            "priority": 0,
+            "route": "FROM /messages/modules/anomaly-detector/outputs/alerts INTO BrokeredEndpoint(\"/modules/local-alert-service/inputs/input1\")",
+            "timeToLiveSecs": 7200
+          },
+          "collectorToNormalizer": {
+            "priority": 3,
+            "route": "FROM /messages/modules/opcua-collector/outputs/telemetry INTO BrokeredEndpoint(\"/modules/normalizer-validator/inputs/input1\")",
+            "timeToLiveSecs": 7200
+          },
+          "filterToAnomaly": {
+            "priority": 3,
+            "route": "FROM /messages/modules/filter-aggregator/outputs/filtered INTO BrokeredEndpoint(\"/modules/anomaly-detector/inputs/input1\")",
+            "timeToLiveSecs": 7200
+          },
+          "normalizerToFilter": {
+            "priority": 3,
+            "route": "FROM /messages/modules/normalizer-validator/outputs/normalized INTO BrokeredEndpoint(\"/modules/filter-aggregator/inputs/input1\")",
+            "timeToLiveSecs": 7200
+          }
+        },
+        "schemaVersion": "1.1",
+        "storeAndForwardConfiguration": {
+          "timeToLiveSecs": 7200
+        }
+      }
+    },
+    "anomaly-detector": {
+      "properties.desired": {}
+    },
+    "filter-aggregator": {
+      "properties.desired": {}
+    },
+    "local-alert-service": {
+      "properties.desired": {}
+    },
+    "normalizer-validator": {
+      "properties.desired": {}
+    },
+    "opcua-collector": {
+      "properties.desired": {}
+    }
+  }
+}

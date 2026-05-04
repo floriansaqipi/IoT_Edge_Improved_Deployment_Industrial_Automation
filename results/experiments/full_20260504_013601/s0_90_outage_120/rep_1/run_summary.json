@@ -1,0 +1,12 @@
+{
+  "cloudAlertRows": 177,
+  "cloudInvalidRows": 0,
+  "cloudTelemetryRows": 14462,
+  "completedAt": "2026-05-04T01:59:02.510268Z",
+  "networkCondition": "cloud_outage_120s",
+  "plannedCloudMessages": 27000,
+  "runId": "s0_90_outage_120_rep1_full_20260504_013601",
+  "scenario": "S0_CLOUD_ONLY",
+  "simulatorCsvRows": 27000,
+  "simulatorJsonlRows": 27000
+}

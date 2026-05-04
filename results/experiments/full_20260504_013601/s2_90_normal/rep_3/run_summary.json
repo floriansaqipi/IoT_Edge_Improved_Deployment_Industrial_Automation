@@ -1,0 +1,12 @@
+{
+  "cloudAlertRows": 386,
+  "cloudInvalidRows": 0,
+  "cloudTelemetryRows": 2570,
+  "completedAt": "2026-05-04T00:43:31.320855Z",
+  "networkCondition": "normal",
+  "plannedCloudMessages": 2700,
+  "runId": "s2_90_normal_rep3_full_20260504_013601",
+  "scenario": "S2_HYBRID",
+  "simulatorCsvRows": 27000,
+  "simulatorJsonlRows": 27000
+}

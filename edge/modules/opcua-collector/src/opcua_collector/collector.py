@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import time
 from datetime import datetime, timezone
 from typing import Any, Protocol
 
@@ -25,6 +26,7 @@ from .opcua_mapping import (
 
 logger = logging.getLogger(__name__)
 RECONNECT_SIGNAL = "__opcua_reconnect__"
+ALLOWED_CLOUD_POLICIES = {"full", "sampled_10_percent", "capped"}
 
 
 class TelemetrySender(Protocol):
@@ -117,8 +119,7 @@ class OpcUaSnapshotReader:
             for key in value_keys_for_device_name(device_name)
         }
 
-        metadata_values = await _read_node_values(metadata_nodes)
-        values = await _read_node_values(value_nodes)
+        metadata_values, values = await _read_node_groups(self.client, metadata_nodes, value_nodes)
 
         anomaly_type = str(metadata_values.get("AnomalyType") or "").strip()
         device_id = str(metadata_values.get("DeviceId") or device_name_to_id(device_name))
@@ -159,6 +160,12 @@ class OpcUaSnapshotReader:
 
 async def collect_forever(config: CollectorConfig, sender: TelemetrySender) -> None:
     last_sequence_by_device: dict[str, int] = {}
+    limiter = _CloudOutputLimiter(
+        policy=config.cloud_output_policy,
+        sample_every=config.sample_every,
+        max_messages_per_second=config.cloud_max_messages_per_second,
+    )
+    started_at = time.monotonic()
 
     while True:
         try:
@@ -184,6 +191,9 @@ async def collect_forever(config: CollectorConfig, sender: TelemetrySender) -> N
                         if last_sequence_by_device.get(device_id) == sequence:
                             continue
                         last_sequence_by_device[device_id] = sequence
+                        elapsed = time.monotonic() - started_at
+                        if not limiter.should_forward(message, elapsed):
+                            continue
                         await sender.send(message)
                 finally:
                     await subscription.delete()
@@ -197,10 +207,60 @@ async def collect_forever(config: CollectorConfig, sender: TelemetrySender) -> N
             await asyncio.sleep(config.reconnect_seconds)
 
 
-async def _read_node_values(nodes: dict[str, Any]) -> dict[str, Any]:
-    keys = list(nodes)
-    values = await asyncio.gather(*(nodes[key].read_value() for key in keys))
-    return dict(zip(keys, values, strict=True))
+async def _read_node_groups(
+    client: Client,
+    metadata_nodes: dict[str, Any],
+    value_nodes: dict[str, Any],
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    metadata_keys = list(metadata_nodes)
+    value_keys = list(value_nodes)
+    nodes = [metadata_nodes[key] for key in metadata_keys]
+    nodes.extend(value_nodes[key] for key in value_keys)
+    raw_values = await client.read_values(nodes)
+    metadata_end = len(metadata_keys)
+    metadata_values = dict(zip(metadata_keys, raw_values[:metadata_end], strict=True))
+    values = dict(zip(value_keys, raw_values[metadata_end:], strict=True))
+    return metadata_values, values
+
+
+class _CloudOutputLimiter:
+    def __init__(
+        self,
+        policy: str,
+        sample_every: int = 10,
+        max_messages_per_second: int | None = None,
+    ) -> None:
+        if policy not in ALLOWED_CLOUD_POLICIES:
+            raise ValueError(f"Unsupported cloud output policy: {policy}.")
+        if sample_every <= 0:
+            raise ValueError("sample_every must be greater than zero.")
+        if max_messages_per_second is not None and max_messages_per_second <= 0:
+            raise ValueError("max_messages_per_second must be greater than zero.")
+        self.policy = policy
+        self.sample_every = sample_every
+        self.max_messages_per_second = max_messages_per_second
+        self._window_second: int | None = None
+        self._sent_in_window = 0
+
+    def should_forward(self, message: dict[str, Any], elapsed_seconds: float) -> bool:
+        if self.policy == "full":
+            return self._under_rate_cap(elapsed_seconds)
+        if self.policy == "sampled_10_percent":
+            sequence = _as_int(message.get("sequence"))
+            return sequence > 0 and sequence % self.sample_every == 0 and self._under_rate_cap(elapsed_seconds)
+        return self._under_rate_cap(elapsed_seconds)
+
+    def _under_rate_cap(self, elapsed_seconds: float) -> bool:
+        if self.max_messages_per_second is None:
+            return True
+        current_window = int(max(elapsed_seconds, 0.0))
+        if self._window_second != current_window:
+            self._window_second = current_window
+            self._sent_in_window = 0
+        if self._sent_in_window >= self.max_messages_per_second:
+            return False
+        self._sent_in_window += 1
+        return True
 
 
 def _node_identifier(node: Any) -> str:

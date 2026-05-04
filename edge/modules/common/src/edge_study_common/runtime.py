@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import inspect
 import logging
+import os
 from collections.abc import Awaitable, Callable
 from typing import Any
 
@@ -13,8 +14,9 @@ Processor = Callable[[dict[str, Any]], list[OutputMessage] | Awaitable[list[Outp
 
 
 def configure_logging() -> None:
+    level_name = os.getenv("LOG_LEVEL", "INFO").strip().upper() or "INFO"
     logging.basicConfig(
-        level=logging.INFO,
+        level=getattr(logging, level_name, logging.INFO),
         format="%(asctime)s %(levelname)s %(name)s %(message)s",
     )
 

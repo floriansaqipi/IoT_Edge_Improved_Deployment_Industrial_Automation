@@ -1,0 +1,101 @@
+{
+  "cost": 236,
+  "interval": "PT1H",
+  "namespace": "Microsoft.Devices/IotHubs",
+  "resourceregion": "switzerlandnorth",
+  "timespan": "2026-05-03T22:43:58Z/2026-05-03T23:43:58Z",
+  "value": [
+    {
+      "displayDescription": "Number of device-to-cloud telemetry messages sent successfully to your IoT hub",
+      "errorCode": "Success",
+      "id": "/subscriptions/9a8eb979-784c-4e21-b3e8-a9bffc4a10a2/resourceGroups/rg-iot-edge-placement-study/providers/Microsoft.Devices/IotHubs/iothub-edge-study-florian01/providers/Microsoft.Insights/metrics/d2c.telemetry.ingress.success",
+      "name": {
+        "localizedValue": "Telemetry messages sent",
+        "value": "d2c.telemetry.ingress.success"
+      },
+      "resourceGroup": "rg-iot-edge-placement-study",
+      "timeseries": [
+        {
+          "data": [
+            {
+              "timeStamp": "2026-05-03T22:43:00Z",
+              "total": 36687.0
+            }
+          ],
+          "metadatavalues": []
+        }
+      ],
+      "type": "Microsoft.Insights/metrics",
+      "unit": "Count"
+    },
+    {
+      "displayDescription": "Number of device-to-cloud telemetry messages attempted to be sent to your IoT hub",
+      "errorCode": "Success",
+      "id": "/subscriptions/9a8eb979-784c-4e21-b3e8-a9bffc4a10a2/resourceGroups/rg-iot-edge-placement-study/providers/Microsoft.Devices/IotHubs/iothub-edge-study-florian01/providers/Microsoft.Insights/metrics/d2c.telemetry.ingress.allProtocol",
+      "name": {
+        "localizedValue": "Telemetry message send attempts",
+        "value": "d2c.telemetry.ingress.allProtocol"
+      },
+      "resourceGroup": "rg-iot-edge-placement-study",
+      "timeseries": [
+        {
+          "data": [
+            {
+              "timeStamp": "2026-05-03T22:43:00Z",
+              "total": 36703.0
+            }
+          ],
+          "metadatavalues": []
+        }
+      ],
+      "type": "Microsoft.Insights/metrics",
+      "unit": "Count"
+    },
+    {
+      "displayDescription": "Number of throttling errors due to device throughput throttles",
+      "errorCode": "Success",
+      "id": "/subscriptions/9a8eb979-784c-4e21-b3e8-a9bffc4a10a2/resourceGroups/rg-iot-edge-placement-study/providers/Microsoft.Devices/IotHubs/iothub-edge-study-florian01/providers/Microsoft.Insights/metrics/d2c.telemetry.ingress.sendThrottle",
+      "name": {
+        "localizedValue": "Number of throttling errors",
+        "value": "d2c.telemetry.ingress.sendThrottle"
+      },
+      "resourceGroup": "rg-iot-edge-placement-study",
+      "timeseries": [
+        {
+          "data": [
+            {
+              "timeStamp": "2026-05-03T22:43:00Z",
+              "total": 0.0
+            }
+          ],
+          "metadatavalues": []
+        }
+      ],
+      "type": "Microsoft.Insights/metrics",
+      "unit": "Count"
+    },
+    {
+      "displayDescription": "Number of total messages used today",
+      "errorCode": "Success",
+      "id": "/subscriptions/9a8eb979-784c-4e21-b3e8-a9bffc4a10a2/resourceGroups/rg-iot-edge-placement-study/providers/Microsoft.Devices/IotHubs/iothub-edge-study-florian01/providers/Microsoft.Insights/metrics/dailyMessageQuotaUsed",
+      "name": {
+        "localizedValue": "Total number of messages used",
+        "value": "dailyMessageQuotaUsed"
+      },
+      "resourceGroup": "rg-iot-edge-placement-study",
+      "timeseries": [
+        {
+          "data": [
+            {
+              "maximum": 33283.0,
+              "timeStamp": "2026-05-03T22:43:00Z"
+            }
+          ],
+          "metadatavalues": []
+        }
+      ],
+      "type": "Microsoft.Insights/metrics",
+      "unit": "Count"
+    }
+  ]
+}

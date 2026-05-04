@@ -14,6 +14,8 @@ class S0PublisherConfig:
     cloud_output_policy: str = "full"
     sample_every: int = 10
     cloud_max_messages_per_second: int | None = 90
+    send_worker_count: int = 32
+    send_queue_maxsize: int = 10000
     experiment_id_fallback: str = "phase5_s0"
     scenario_fallback: str = "S0_CLOUD_ONLY"
     run_id_fallback: str = "phase5_s0_rep1"
@@ -43,6 +45,8 @@ class S0PublisherConfig:
             cloud_output_policy=os.getenv("CLOUD_OUTPUT_POLICY", "full").strip().lower() or "full",
             sample_every=_positive_int(os.getenv("SAMPLE_EVERY", "10"), "SAMPLE_EVERY"),
             cloud_max_messages_per_second=max_mps,
+            send_worker_count=_positive_int(os.getenv("SEND_WORKER_COUNT", "32"), "SEND_WORKER_COUNT"),
+            send_queue_maxsize=_positive_int(os.getenv("SEND_QUEUE_MAXSIZE", "10000"), "SEND_QUEUE_MAXSIZE"),
             experiment_id_fallback=os.getenv("EXPERIMENT_ID_FALLBACK", "phase5_s0").strip() or "phase5_s0",
             scenario_fallback=os.getenv("SCENARIO_FALLBACK", "S0_CLOUD_ONLY").strip() or "S0_CLOUD_ONLY",
             run_id_fallback=os.getenv("RUN_ID_FALLBACK", "phase5_s0_rep1").strip() or "phase5_s0_rep1",

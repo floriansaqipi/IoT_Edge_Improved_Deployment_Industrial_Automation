@@ -14,6 +14,7 @@ class CloudOutputLimiter:
     max_messages_per_second: int | None = None
     _window_second: int | None = None
     _sent_in_window: int = 0
+    _seen_count: int = 0
 
     def __post_init__(self) -> None:
         if self.policy not in ALLOWED_POLICIES:
@@ -29,8 +30,8 @@ class CloudOutputLimiter:
         if self.policy == "full":
             return self._under_rate_cap(elapsed_seconds)
         if self.policy == "sampled_10_percent":
-            sequence = int(message.get("sequence", 0))
-            return sequence > 0 and sequence % self.sample_every == 0 and self._under_rate_cap(elapsed_seconds)
+            self._seen_count += 1
+            return self._seen_count % self.sample_every == 0 and self._under_rate_cap(elapsed_seconds)
         return self._under_rate_cap(elapsed_seconds)
 
     def _under_rate_cap(self, elapsed_seconds: float) -> bool:
